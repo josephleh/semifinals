@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        .gameDiv {
+            flex: 1 1 30%;
+            border: 5px solid royalblue;
+            border-radius: 15px;
+            padding: 20px;
+            background-color: #121212;
+            text-align: center;
+            margin: 10px;
+        }
+
+        #player1Text {
+            color: #7CFC00;
+        }
+
+        #player2Text {
+            color: #7CFC00;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+        }
+
+        .choice {
+            line-height: 50px;
+            width: 110px;
+            font-size: 18px;
+            color: #7CFC00;
+            border: 3px solid #7CFC00;
+            background-color: #121212;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .choiceBtn {
+            line-height: 50px;
+            width: 110px;
+            font-size: 18px;
+            color: #7CFC00;
+            border: 3px solid #7CFC00;
+            background-color: #121212;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .choice:hover {
+            background-color: royalblue;
+            color: #121212;
+        }
+
+        .choiceBtn:hover {
+            background-color: royalblue;
+            color: #121212;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            border: 5px solid royalblue;
+            border-radius: 15px;
+        }
+
+        .title {
+            text-align: center;
+            color: #7CFC00;
+            margin-top: 20px;
+        }
+
+        .gameText {
+            color: #7CFC00;
+        }
+
+        .reset {
+            line-height: 50px;
+            width: 150px;
+            font-size: 18px;
+            color: #7CFC00;
+            border: 3px solid #7CFC00;
+            background-color: #121212;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .reset:hover {
+            background-color: royalblue;
+            color: #121212;
+        }
+
+        #resultText {
+            color: #7CFC00;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Rock, Paper, & Scissors</h1>
+    <div class="container">
+        <div id="gameDiv1" class="gameDiv">
+            <h1 class="gameText" id="player1Text">Player1: </h1>
+            <button class="choiceBtn">ROCK</button>
+            <button class="choiceBtn">PAPER</button>
+            <button class="choiceBtn">SCISSORS</button>
+        </div>
+
+        <div id="gameDiv2" class="gameDiv">
+            <h1 class="gameText" id="player2Text">Player2: </h1>
+            <button class="choice">ROCK</button>
+            <button class="choice">PAPER</button>
+            <button class="choice">SCISSORS</button>
+        </div>
+
+        <div id="gameDiv3" class="gameDiv">
+            <h1 class="gameText" id="resultText"></h1>
+        </div>
+    </div>
+    <button class="reset">Restart</button>
+
+    <script>
+        const player1Text = document.querySelector("#player1Text");
+        const player2Text = document.querySelector("#player2Text");
+        const resultText = document.querySelector("#resultText");
+        const choiceBtns = document.querySelectorAll(".choiceBtn");
+        const choices = document.querySelectorAll(".choice");
+        const resetButton = document.querySelector(".reset");
+
+        let player1Wins = 0;
+        let player2Wins = 0;
+        let result;
+
+        resetGame();
+
+        choiceBtns.forEach(button => button.addEventListener("click", () => {
+            player1 = button.textContent;
+            player1Text.textContent = "Player1: ";
+            resultText.textContent = "Player 2's Turn to choose";
+            disableButtons(choiceBtns);
+            enableButtons(choices);
+        }));
+
+        choices.forEach(button => button.addEventListener("click", () => {
+            player2 = button.textContent;
+            player2Text.textContent = "Player2: ";
+            result = checkWinner();
+            resultText.textContent = result;
+
+            if (result.includes("Wins")) {
+                updateScore(result);
+                if (player1Wins < 3 && player2Wins < 3) {
+                    setTimeout(resetRound, 2000);
+                } else {
+                    displayWinner();
+                }
+            } else {
+                setTimeout(resetRound, 2000);
+            }
+        }));
+
+        resetButton.addEventListener("click", resetGame);
+
+        function checkWinner() {
+            if (player1 == null || player2 == null) {
+            return "Make a choice for both players.";
+            }
+            if (player1 == player2) {
+                return "Draw!";
+            } else if (
+                (player1 == "PAPER" && player2 == "ROCK") ||
+                (player1 == "ROCK" && player2 == "SCISSORS") ||
+                (player1 == "SCISSORS" && player2 == "PAPER")
+            ) {
+                return "Player 1 Wins!🎉";
+            } else {
+                return "Player 2 Wins!🎉";
+            }
+        }
+
+        function resetRound() {
+            player1 = null;
+            player2 = null;
+            player1Text.textContent = "Player1: ";
+            player2Text.textContent = "Player2: ";
+            resultText.textContent = "Player 1's Turn to choose";
+            enableButtons(choiceBtns);
+            enableButtons(choices);
+        }
+
+        function resetGame() {
+            player1Wins = 0;
+            player2Wins = 0;
+            resetRound();
+            displayScore();
+            resultText.textContent = "Player 1's Turn to choose";
+            enableButtons(choiceBtns);
+        }
+
+        function updateScore(result) {
+            if (result.includes("Player 1 Wins")) {
+                player1Wins++;
+            } else if (result.includes("Player 2 Wins")) {
+                player2Wins++;
+            }
+            displayScore();
+        }
+
+        function displayScore() {
+            resultText.textContent = `Score - Player 1: ${player1Wins} | Player 2: ${player2Wins}`;
+        }
+
+        function displayWinner() {
+            if (player1Wins >= 3) {
+                resultText.textContent = `Player 1 is the Overall Winner!🏆 (${player1Wins} rounds)`;
+            } else if (player2Wins >= 3) {
+                resultText.textContent = `Player 2 is the Overall Winner!🏆 (${player2Wins} rounds)`;
+            } else {
+                resultText.textContent = "No overall winner yet. Continue playing!";
+            }
+            disableButtons(choiceBtns);
+            disableButtons(choices);
+        }
+
+        function disableButtons(buttons) {
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        function enableButtons(buttons) {
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
